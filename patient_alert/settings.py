@@ -26,7 +26,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'fake_key')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['patientalert.herokuapp.com']
+ALLOWED_HOSTS = ['patientalert.herokuapp.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'schedule',
+    'import_export',
 ]
 
 MIDDLEWARE = [
@@ -82,10 +83,21 @@ WSGI_APPLICATION = 'patient_alert.wsgi.application'
 #     }
 # }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'appointment_alert',
+        'USER': 'brendan',
+        'PASSWORD': 'temp_password',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 

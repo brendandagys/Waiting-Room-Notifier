@@ -22,5 +22,5 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('schedule/', include('schedule.urls')),
-    path('', RedirectView.as_view(url='/catalog/', permanent=True)), # Add URL maps to redirect the base URL to 'schedule' application
+    path('', RedirectView.as_view(url='/schedule/', permanent=True)), # Add URL maps to redirect the base URL to 'schedule' application
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
