@@ -1,81 +1,301 @@
 from django.shortcuts import render
 
 from schedule.models import Schedule
-# from schedule.forms import ScheduleForm
+from schedule.forms import ScheduleForm
+
+import datetime
+current_hour = datetime.datetime.now().hour
+
+slots = ['7:00 - 7:15', '7:15 - 7:30', '7:30 - 7:45', '7:45 - 8:00',
+         '8:00 - 8:15', '8:15 - 8:30', '8:30 - 8:45', '8:45 - 9:00',
+         '9:00 - 9:15', '9:15 - 9:30', '9:30 - 9:45', '9:45 - 10:00',
+         '10:00 - 10:15', '10:15 - 10:30', '10:30 - 10:45', '10:45 - 11:00',
+         '11:00 - 11:15', '11:15 - 11:30', '11:30 - 11:45', '11:45 - 12:00',
+         '12:00 - 12:15', '12:15 - 12:30', '12:30 - 12:45', '12:45 - 13:00',
+         '13:00 - 13:15', '13:15 - 13:30', '13:30 - 13:45', '13:45 - 14:00',
+         '14:00 - 14:15', '14:15 - 14:30', '14:30 - 14:45', '14:45 - 15:00',
+         '15:00 - 15:15', '15:15 - 15:30', '15:30 - 15:45', '15:45 - 16:00',
+         '16:00 - 16:15', '16:15 - 16:30', '16:30 - 16:45', '16:45 - 17:00',
+         '17:00 - 17:15', '17:15 - 17:30', '17:30 - 17:45', '17:45 - 18:00',
+         '18:00 - 18:15', '18:15 - 18:30', '18:30 - 18:45', '18:45 - 19:00', ]
+
+def get_default_json(slot_number):
+
+    if slot_number == 1:
+        slot = slots[0]
+    elif slot_number == 2:
+        slot = slots[1]
+    elif slot_number == 3:
+        slot = slots[2]
+    elif slot_number == 4:
+        slot = slots[3]
+    elif slot_number == 5:
+        slot = slots[4]
+    elif slot_number == 6:
+        slot = slots[5]
+    elif slot_number == 7:
+        slot = slots[6]
+    elif slot_number == 8:
+        slot = slots[7]
+    elif slot_number == 9:
+        slot = slots[8]
+    elif slot_number == 10:
+        slot = slots[9]
+    elif slot_number == 11:
+        slot = slots[10]
+    elif slot_number == 12:
+        slot = slots[11]
+    elif slot_number == 13:
+        slot = slots[12]
+    elif slot_number == 14:
+        slot = slots[13]
+    elif slot_number == 15:
+        slot = slots[14]
+    elif slot_number == 16:
+        slot = slots[15]
+    elif slot_number == 17:
+        slot = slots[16]
+    elif slot_number == 18:
+        slot = slots[17]
+    elif slot_number == 19:
+        slot = slots[18]
+    elif slot_number == 20:
+        slot = slots[19]
+    elif slot_number == 21:
+        slot = slots[20]
+    elif slot_number == 22:
+        slot = slots[21]
+    elif slot_number == 23:
+        slot = slots[22]
+    elif slot_number == 24:
+        slot = slots[23]
+    elif slot_number == 25:
+        slot = slots[24]
+    elif slot_number == 26:
+        slot = slots[25]
+    elif slot_number == 27:
+        slot = slots[26]
+    elif slot_number == 28:
+        slot = slots[27]
+    elif slot_number == 29:
+        slot = slots[28]
+    elif slot_number == 30:
+        slot = slots[29]
+    elif slot_number == 31:
+        slot = slots[30]
+    elif slot_number == 32:
+        slot = slots[31]
+    elif slot_number == 33:
+        slot = slots[32]
+    elif slot_number == 34:
+        slot = slots[33]
+    elif slot_number == 35:
+        slot = slots[34]
+    elif slot_number == 36:
+        slot = slots[35]
+    elif slot_number == 37:
+        slot = slots[36]
+    elif slot_number == 38:
+        slot = slots[37]
+    elif slot_number == 39:
+        slot = slots[38]
+    elif slot_number == 40:
+        slot = slots[39]
+    elif slot_number == 41:
+        slot = slots[40]
+    elif slot_number == 42:
+        slot = slots[41]
+    elif slot_number == 43:
+        slot = slots[42]
+    elif slot_number == 44:
+        slot = slots[43]
+    elif slot_number == 45:
+        slot = slots[44]
+    elif slot_number == 46:
+        slot = slots[45]
+    elif slot_number == 47:
+        slot = slots[46]
+    elif slot_number == 48:
+        slot = slots[47]
+
+    return {
+        'slot': slot,
+        'name': '',
+        'modality': 'No Contact', # No Contact, Phone, Email, Both
+        'phone': '',
+        'email': '',
+        'status': 'Unsent', # Unsent, Sent, Accepted, Declined
+    }
 
 # Create your views here.
 def schedule(request):
 
     if request.method == 'GET':
 
-        if Schedule.objects.last() is None:
-            schedule_object = Schedule()
-
-        elif Schedule.objects.last().date == datetime.date.today():
-            schedule_object = Schedule.objects.all().order_by('-date')[:1][0]
+        if Schedule.objects.last() is None or Schedule.objects.last().date != datetime.date.today():
+            # schedule_object = Schedule()
+            form_1  = ScheduleForm(initial=get_default_json(1))
+            form_2  = ScheduleForm(initial=get_default_json(2))
+            form_3  = ScheduleForm(initial=get_default_json(3))
+            form_4  = ScheduleForm(initial=get_default_json(4))
+            form_5  = ScheduleForm(initial=get_default_json(5))
+            form_6  = ScheduleForm(initial=get_default_json(6))
+            form_7  = ScheduleForm(initial=get_default_json(7))
+            form_8  = ScheduleForm(initial=get_default_json(8))
+            form_9  = ScheduleForm(initial=get_default_json(9))
+            form_10 = ScheduleForm(initial=get_default_json(10))
+            form_11 = ScheduleForm(initial=get_default_json(11))
+            form_12 = ScheduleForm(initial=get_default_json(12))
+            form_13 = ScheduleForm(initial=get_default_json(13))
+            form_14 = ScheduleForm(initial=get_default_json(14))
+            form_15 = ScheduleForm(initial=get_default_json(15))
+            form_16 = ScheduleForm(initial=get_default_json(16))
+            form_17 = ScheduleForm(initial=get_default_json(17))
+            form_18 = ScheduleForm(initial=get_default_json(18))
+            form_19 = ScheduleForm(initial=get_default_json(19))
+            form_20 = ScheduleForm(initial=get_default_json(20))
+            form_21 = ScheduleForm(initial=get_default_json(21))
+            form_22 = ScheduleForm(initial=get_default_json(22))
+            form_23 = ScheduleForm(initial=get_default_json(23))
+            form_24 = ScheduleForm(initial=get_default_json(24))
+            form_25 = ScheduleForm(initial=get_default_json(25))
+            form_26 = ScheduleForm(initial=get_default_json(26))
+            form_27 = ScheduleForm(initial=get_default_json(27))
+            form_28 = ScheduleForm(initial=get_default_json(28))
+            form_29 = ScheduleForm(initial=get_default_json(29))
+            form_30 = ScheduleForm(initial=get_default_json(30))
+            form_31 = ScheduleForm(initial=get_default_json(31))
+            form_32 = ScheduleForm(initial=get_default_json(32))
+            form_33 = ScheduleForm(initial=get_default_json(33))
+            form_34 = ScheduleForm(initial=get_default_json(34))
+            form_35 = ScheduleForm(initial=get_default_json(35))
+            form_36 = ScheduleForm(initial=get_default_json(36))
+            form_37 = ScheduleForm(initial=get_default_json(37))
+            form_38 = ScheduleForm(initial=get_default_json(38))
+            form_39 = ScheduleForm(initial=get_default_json(39))
+            form_40 = ScheduleForm(initial=get_default_json(40))
+            form_41 = ScheduleForm(initial=get_default_json(41))
+            form_42 = ScheduleForm(initial=get_default_json(42))
+            form_43 = ScheduleForm(initial=get_default_json(43))
+            form_44 = ScheduleForm(initial=get_default_json(44))
+            form_45 = ScheduleForm(initial=get_default_json(45))
+            form_46 = ScheduleForm(initial=get_default_json(46))
+            form_47 = ScheduleForm(initial=get_default_json(47))
+            form_48 = ScheduleForm(initial=get_default_json(48))
 
         else:
-            schedule_object = Schedule()
+            schedule_object = Schedule.objects.all().order_by('-date')[:1][0]
 
-        date = schedule_object.date
+            objects = [schedule_object.slot_1, schedule_object.slot_2, schedule_object.slot_3, schedule_object.slot_4,
+                       schedule_object.slot_5, schedule_object.slot_6, schedule_object.slot_7, schedule_object.slot_8,
+                       schedule_object.slot_9, schedule_object.slot_10, schedule_object.slot_11, schedule_object.slot_12,
+                       schedule_object.slot_13, schedule_object.slot_14, schedule_object.slot_15, schedule_object.slot_16,
+                       schedule_object.slot_17, schedule_object.slot_18, schedule_object.slot_19, schedule_object.slot_20,
+                       schedule_object.slot_21, schedule_object.slot_22, schedule_object.slot_23, schedule_object.slot_24,
+                       schedule_object.slot_25, schedule_object.slot_26, schedule_object.slot_27, schedule_object.slot_28,
+                       schedule_object.slot_29, schedule_object.slot_30, schedule_object.slot_31, schedule_object.slot_32,
+                       schedule_object.slot_33, schedule_object.slot_34, schedule_object.slot_35, schedule_object.slot_36,
+                       schedule_object.slot_37, schedule_object.slot_38, schedule_object.slot_39, schedule_object.slot_40,
+                       schedule_object.slot_41, schedule_object.slot_42, schedule_object.slot_43, schedule_object.slot_44,
+                       schedule_object.slot_45, schedule_object.slot_46, schedule_object.slot_47, schedule_object.slot_48, ]
 
-    # 'slot': '',
-    # 'name': '',
-    # 'modality': '',
-    # 'phone': '',
-    # 'email': '',
-    # 'status': '',
+            form_1  = ScheduleForm(initial=objects[0])
+            form_2  = ScheduleForm(initial=objects[1])
+            form_3  = ScheduleForm(initial=objects[2])
+            form_4  = ScheduleForm(initial=objects[3])
+            form_5  = ScheduleForm(initial=objects[4])
+            form_6  = ScheduleForm(initial=objects[5])
+            form_7  = ScheduleForm(initial=objects[6])
+            form_8  = ScheduleForm(initial=objects[7])
+            form_9  = ScheduleForm(initial=objects[8])
+            form_10 = ScheduleForm(initial=objects[9])
+            form_11 = ScheduleForm(initial=objects[10])
+            form_12 = ScheduleForm(initial=objects[11])
+            form_13 = ScheduleForm(initial=objects[12])
+            form_14 = ScheduleForm(initial=objects[13])
+            form_15 = ScheduleForm(initial=objects[14])
+            form_16 = ScheduleForm(initial=objects[15])
+            form_17 = ScheduleForm(initial=objects[16])
+            form_18 = ScheduleForm(initial=objects[17])
+            form_19 = ScheduleForm(initial=objects[18])
+            form_20 = ScheduleForm(initial=objects[19])
+            form_21 = ScheduleForm(initial=objects[20])
+            form_22 = ScheduleForm(initial=objects[21])
+            form_23 = ScheduleForm(initial=objects[22])
+            form_24 = ScheduleForm(initial=objects[23])
+            form_25 = ScheduleForm(initial=objects[24])
+            form_26 = ScheduleForm(initial=objects[25])
+            form_27 = ScheduleForm(initial=objects[26])
+            form_28 = ScheduleForm(initial=objects[27])
+            form_29 = ScheduleForm(initial=objects[28])
+            form_30 = ScheduleForm(initial=objects[29])
+            form_31 = ScheduleForm(initial=objects[30])
+            form_32 = ScheduleForm(initial=objects[31])
+            form_33 = ScheduleForm(initial=objects[32])
+            form_34 = ScheduleForm(initial=objects[33])
+            form_35 = ScheduleForm(initial=objects[34])
+            form_36 = ScheduleForm(initial=objects[35])
+            form_37 = ScheduleForm(initial=objects[36])
+            form_38 = ScheduleForm(initial=objects[37])
+            form_39 = ScheduleForm(initial=objects[38])
+            form_40 = ScheduleForm(initial=objects[39])
+            form_41 = ScheduleForm(initial=objects[40])
+            form_42 = ScheduleForm(initial=objects[41])
+            form_43 = ScheduleForm(initial=objects[42])
+            form_44 = ScheduleForm(initial=objects[43])
+            form_45 = ScheduleForm(initial=objects[44])
+            form_46 = ScheduleForm(initial=objects[45])
+            form_47 = ScheduleForm(initial=objects[46])
+            form_48 = ScheduleForm(initial=objects[47])
 
-        print(schedule_object.slot_1['slot'])
-        # slot_2
-        # slot_3
-        # slot_4
-        # slot_5
-        # slot_6
-        # slot_7
-        # slot_8
-        # slot_9
-        # slot_10
-        # slot_11
-        # slot_12
-        # slot_13
-        # slot_14
-        # slot_15
-        # slot_16
-        # slot_17
-        # slot_18
-        # slot_19
-        # slot_20
-        # slot_21
-        # slot_22
-        # slot_23
-        # slot_24
-        # slot_25
-        # slot_26
-        # slot_27
-        # slot_28
-        # slot_29
-        # slot_30
-        # slot_31
-        # slot_32
-        # slot_33
-        # slot_34
-        # slot_35
-        # slot_36
-        # slot_37
-        # slot_38
-        # slot_39
-        # slot_40
-        # slot_41
-        # slot_42
-        # slot_43
-        # slot_44
-        # slot_45
-        # slot_46
-        # slot_47
-        # slot_48
-        # slot_49
-        # slot_50
+        context = { 'date': datetime.date.today(),
+                    'form_dict': {'form_1' : form_1,
+                                  'form_2' : form_2,
+                                  'form_3' : form_3,
+                                  'form_4' : form_4,
+                                  'form_5' : form_5,
+                                  'form_6' : form_6,
+                                  'form_7' : form_7,
+                                  'form_8' : form_8,
+                                  'form_9' : form_9,
+                                  'form_10': form_10,
+                                  'form_11': form_11,
+                                  'form_12': form_12,
+                                  'form_13': form_13,
+                                  'form_14': form_14,
+                                  'form_15': form_15,
+                                  'form_16': form_16,
+                                  'form_17': form_17,
+                                  'form_18': form_18,
+                                  'form_19': form_19,
+                                  'form_20': form_20,
+                                  'form_21': form_21,
+                                  'form_22': form_22,
+                                  'form_23': form_23,
+                                  'form_24': form_24,
+                                  'form_25': form_25,
+                                  'form_26': form_26,
+                                  'form_27': form_27,
+                                  'form_28': form_28,
+                                  'form_29': form_29,
+                                  'form_30': form_30,
+                                  'form_31': form_31,
+                                  'form_32': form_32,
+                                  'form_33': form_33,
+                                  'form_34': form_34,
+                                  'form_35': form_35,
+                                  'form_36': form_36,
+                                  'form_37': form_37,
+                                  'form_38': form_38,
+                                  'form_39': form_39,
+                                  'form_40': form_40,
+                                  'form_41': form_41,
+                                  'form_42': form_42,
+                                  'form_43': form_43,
+                                  'form_44': form_44,
+                                  'form_45': form_45,
+                                  'form_46': form_46,
+                                  'form_47': form_47,
+                                  'form_48': form_48, }}
 
-
-        # form = ScheduleForm(request)
+        return render(request, 'schedule.html', context=context)

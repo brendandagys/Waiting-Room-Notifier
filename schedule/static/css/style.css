@@ -1,0 +1,10 @@
+input[type='text']{
+  font-size: 0.75rem;
+  height: 75%;
+}
+
+select {
+  font-size: 0.75rem;
+  height: 75%;
+  width: 100%;
+}
