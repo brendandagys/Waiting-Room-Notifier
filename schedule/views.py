@@ -200,7 +200,7 @@ def schedule(request):
                        schedule_object.slot_37, schedule_object.slot_38, schedule_object.slot_39, schedule_object.slot_40,
                        schedule_object.slot_41, schedule_object.slot_42, schedule_object.slot_43, schedule_object.slot_44,
                        schedule_object.slot_45, schedule_object.slot_46, schedule_object.slot_47, schedule_object.slot_48, ]
-            print(objects[0])
+
             form_1  = ScheduleForm(initial=objects[0])
             form_2  = ScheduleForm(initial=objects[1])
             form_3  = ScheduleForm(initial=objects[2])

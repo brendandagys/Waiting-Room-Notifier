@@ -344,10 +344,43 @@ $(document).ready(function() {
     }
   });
 
+  // Validate phone number
+  $("[id*=phone]").on('blur', function(e) {
+    let numbers_regex = $(this).val().match(/^[^\d]*([0-9]*)[^\d]*([0-9]*)[^\d]*([0-9]*)[^\d]*([0-9]*)[^\d]*([0-9]*)[^\d]*([0-9]*)[^\d]*([0-9]*)$/); // .map(Number)[0] IT IS A STRING
 
+    if (numbers_regex != null) {
+      var numbers = numbers_regex[1] + numbers_regex[2] + numbers_regex[3] + numbers_regex[4] + numbers_regex[5] + numbers_regex[6] + numbers_regex[7];
+
+      if (numbers.length === 10) {
+        $(this).removeClass('not_validated');
+        $(this).addClass('validated');
+      }
+      else if (numbers.length === 7) {
+        numbers = '705' + numbers
+        $(this).removeClass('not_validated');
+        $(this).addClass('validated');
+      }
+      else {
+        alert('Please enter a 10-digit or 7-digit (no area code) phone number.');
+        $(this).removeClass('validated');
+        $(this).addClass('not_validated');
+      }
+    }
+    else {
+      alert('Please enter a valid phone number.');
+      $(this).removeClass('validated');
+      $(this).addClass('not_validated');
+    }
+
+    console.log(numbers);
+  });
+
+  // Validate email address
+  $("[id*=email]").on('blur', function(e) {
+
+  });
 
   $('input,select').on('blur', function(e) {
-    // e.preventDefault()
 
     var form_indicator = '_' + e.target.id.substr(1 + e.target.id.lastIndexOf('_')); // Get the _# to identify the row to POST
     var selection = $("[id$=" + form_indicator + "]"); // Get all elements of that row
@@ -378,7 +411,6 @@ $(document).ready(function() {
       }
     });
   });
-  // return false;
 });
 
 </script>

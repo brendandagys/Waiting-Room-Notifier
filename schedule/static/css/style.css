@@ -19,3 +19,11 @@ select {
   top: -0.25rem;
   line-height: 5px;
 }
+
+.validated {
+  background-color: lightgreen;
+}
+
+.not_validated {
+  background-color: lightcoral;
+}
