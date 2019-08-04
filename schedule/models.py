@@ -9,12 +9,11 @@ def get_default_json():
     return {
         'slot': '',
         'name': '',
-        'modality': '', # No Contact, Phone, Email, Both
+        'modality': 'Unspecified',
         'phone': '',
         'email': '',
-        'status': '', # Unsent, Sent, Accepted, Declined
+        'status': 'Unsent', # Unsent, Sent, Accepted, Declined
     }
-
 
 # Create your models here.
 class Schedule(models.Model):
@@ -68,3 +67,10 @@ class Schedule(models.Model):
     slot_46 = JSONField(default=get_default_json, verbose_name='Slot 46')
     slot_47 = JSONField(default=get_default_json, verbose_name='Slot 47')
     slot_48 = JSONField(default=get_default_json, verbose_name='Slot 48')
+
+    class Meta:
+        verbose_name_plural = 'Schedule'
+        verbose_name = 'Schedule'
+
+    def __str__(self):
+        return 'Schedule for: ' + str(self.date)

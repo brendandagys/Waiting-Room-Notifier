@@ -1,5 +1,7 @@
 from django.shortcuts import render
 
+from django.http import HttpResponse
+
 from schedule.models import Schedule
 from schedule.forms import ScheduleForm
 
@@ -121,7 +123,7 @@ def get_default_json(slot_number):
     return {
         'slot': slot,
         'name': '',
-        'modality': 'No Contact', # No Contact, Phone, Email, Both
+        'modality': 'Unspecified',
         'phone': '',
         'email': '',
         'status': 'Unsent', # Unsent, Sent, Accepted, Declined
@@ -133,7 +135,7 @@ def schedule(request):
     if request.method == 'GET':
 
         if Schedule.objects.last() is None or Schedule.objects.last().date != datetime.date.today():
-            # schedule_object = Schedule()
+
             form_1  = ScheduleForm(initial=get_default_json(1))
             form_2  = ScheduleForm(initial=get_default_json(2))
             form_3  = ScheduleForm(initial=get_default_json(3))
@@ -198,7 +200,7 @@ def schedule(request):
                        schedule_object.slot_37, schedule_object.slot_38, schedule_object.slot_39, schedule_object.slot_40,
                        schedule_object.slot_41, schedule_object.slot_42, schedule_object.slot_43, schedule_object.slot_44,
                        schedule_object.slot_45, schedule_object.slot_46, schedule_object.slot_47, schedule_object.slot_48, ]
-
+            print(objects[0])
             form_1  = ScheduleForm(initial=objects[0])
             form_2  = ScheduleForm(initial=objects[1])
             form_3  = ScheduleForm(initial=objects[2])
@@ -299,3 +301,53 @@ def schedule(request):
                                   'form_48': form_48, }}
 
         return render(request, 'schedule.html', context=context)
+
+    elif request.method == 'POST':
+
+        if Schedule.objects.last() is None:
+            schedule_object = Schedule()
+            set_default_slots = True
+
+        elif Schedule.objects.last().date == datetime.date.today():
+            schedule_object = Schedule.objects.all().order_by('-date')[:1][0]
+            set_default_slots = False
+
+        else:
+            schedule_object = Schedule()
+            set_default_slots = True
+
+        json_dicts = [schedule_object.slot_1, schedule_object.slot_2, schedule_object.slot_3, schedule_object.slot_4,
+                   schedule_object.slot_5, schedule_object.slot_6, schedule_object.slot_7, schedule_object.slot_8,
+                   schedule_object.slot_9, schedule_object.slot_10, schedule_object.slot_11, schedule_object.slot_12,
+                   schedule_object.slot_13, schedule_object.slot_14, schedule_object.slot_15, schedule_object.slot_16,
+                   schedule_object.slot_17, schedule_object.slot_18, schedule_object.slot_19, schedule_object.slot_20,
+                   schedule_object.slot_21, schedule_object.slot_22, schedule_object.slot_23, schedule_object.slot_24,
+                   schedule_object.slot_25, schedule_object.slot_26, schedule_object.slot_27, schedule_object.slot_28,
+                   schedule_object.slot_29, schedule_object.slot_30, schedule_object.slot_31, schedule_object.slot_32,
+                   schedule_object.slot_33, schedule_object.slot_34, schedule_object.slot_35, schedule_object.slot_36,
+                   schedule_object.slot_37, schedule_object.slot_38, schedule_object.slot_39, schedule_object.slot_40,
+                   schedule_object.slot_41, schedule_object.slot_42, schedule_object.slot_43, schedule_object.slot_44,
+                   schedule_object.slot_45, schedule_object.slot_46, schedule_object.slot_47, schedule_object.slot_48, ]
+
+        # Run this code if a new object has been created
+        if set_default_slots == True:
+
+            slot_counter = 0
+
+            for slot_json in json_dicts:
+                slot_json['slot'] = slots[slot_counter]
+                slot_counter+=1
+
+        # Get the specific slot to update based on the POST request
+        slot_json = json_dicts[int(request.POST['form_indicator'][1:]) - 1]
+
+        slot_json['slot'] = request.POST['slot']
+        slot_json['name'] = request.POST['name']
+        slot_json['modality'] = request.POST['modality']
+        slot_json['phone'] = request.POST['phone']
+        slot_json['email'] = request.POST['email']
+        slot_json['status'] = request.POST['status']
+
+        schedule_object.save()
+
+        return HttpResponse()
