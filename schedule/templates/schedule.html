@@ -330,69 +330,143 @@ $(document).ready(function() {
   $('#id_status').attr('id', 'id_status_47');
   $('#id_status').attr('id', 'id_status_48');
 
-  // Select all status elements, and run a function on all of them
-  $("[id*=status]").each(function() {
-    // Get the ID number of each status element
+
+  $("[id*=phone]").each(function() {
+    // Get the row number
     let row = $(this).attr("id").substr(1 + $(this).attr("id").lastIndexOf('_'));
     // Turn the ID number into a single string that exactly matches the status element for the given row
-    let status_element = "id_status_" + row;
-    // If that status element is equal to 'Unsent'...
-    if ($("[id=" + status_element + "]").val() == 'Unsent') {
-      // Replace element with button
-      $(this).replaceWith("<input id=\"new_button_" + row + "\" class=\"btn btn-primary shrink_send_button\" type=\"button\" value=\"Send Notification\" name=\"send_notification\">");
+    let phone_element = "#id_phone_" + row;
+    let email_element = "#id_email_" + row;
 
-    }
+    validatePhone($(phone_element), alerts='No');
+    validateEmail($(email_element), alerts='No');
+    validateButton(row);
   });
+
+
+  // Validate button display
+  function validateButton(row) {
+
+    let display_button = 'No';
+
+    let modality_element = "#id_modality_" + row;
+    let phone_element = "#id_phone_" + row;
+    let email_element = "#id_email_" + row;
+    let status_element = "#id_status_" + row;
+
+    if ($(modality_element).val() == 'Phone') {
+      if ($(phone_element).hasClass("validated")) {
+        $(status_element).replaceWith("<input id=\"new_button_" + row + "\" class=\"btn btn-primary shrink_send_button\" type=\"button\" value=\"Send Notification\" name=\"send_notification\">");
+        console.log('PHONE WORKED');
+      }
+    }
+
+    else if ($(modality_element).val() == 'Email') {
+      if ($(email_element).hasClass("validated")) {
+        $(status_element).replaceWith("<input id=\"new_button_" + row + "\" class=\"btn btn-primary shrink_send_button\" type=\"button\" value=\"Send Notification\" name=\"send_notification\">");
+        console.log('EMAIL WORKED');
+      }
+    }
+
+    else if ($(modality_element).val() == 'Phone & Email') {
+      if ($(phone_element).hasClass("validated") && $(email_element).hasClass("validated")) {
+        $(status_element).replaceWith("<input id=\"new_button_" + row + "\" class=\"btn btn-primary shrink_send_button\" type=\"button\" value=\"Send Notification\" name=\"send_notification\">");
+        console.log('BOTH WORKED');
+      }
+    }
+  }
+
 
   // Validate phone number
-  $("[id*=phone]").on('blur', function(e) {
-    let numbers_regex = $(this).val().match(/^[^\d]*([0-9]*)[^\d]*([0-9]*)[^\d]*([0-9]*)[^\d]*([0-9]*)[^\d]*([0-9]*)[^\d]*([0-9]*)[^\d]*([0-9]*)$/); // .map(Number)[0] IT IS A STRING
+  function validatePhone(object, alerts='Yes') {
 
-    if (numbers_regex != null) {
-      var numbers = numbers_regex[1] + numbers_regex[2] + numbers_regex[3] + numbers_regex[4] + numbers_regex[5] + numbers_regex[6] + numbers_regex[7];
+    if (object.val().trim() !== '') {
 
-      if (numbers.length === 10) {
-        $(this).removeClass('not_validated');
-        $(this).addClass('validated');
+      let numbers_regex = object.val().match(/^[^\d]*([0-9]*)[^\d]*([0-9]*)[^\d]*([0-9]*)[^\d]*([0-9]*)[^\d]*([0-9]*)[^\d]*([0-9]*)[^\d]*([0-9]*)$/); // .map(Number)[0] IT IS A STRING
+
+      if (numbers_regex != null) {
+        var numbers = numbers_regex[1] + numbers_regex[2] + numbers_regex[3] + numbers_regex[4] + numbers_regex[5] + numbers_regex[6] + numbers_regex[7];
+
+        if (numbers.length === 10) {
+          object.removeClass('not_validated');
+          object.addClass('validated');
+        }
+        else if (numbers.length === 7) {
+          numbers = '705' + numbers
+          object.removeClass('not_validated');
+          object.addClass('validated');
+        }
+        else {
+          if (alerts === 'Yes') {
+            alert('Please enter a 10-digit or 7-digit (no area code) phone number.');
+          }
+          object.removeClass('validated');
+          object.addClass('not_validated');
+        }
       }
-      else if (numbers.length === 7) {
-        numbers = '705' + numbers
-        $(this).removeClass('not_validated');
-        $(this).addClass('validated');
+      else { // Don't think this is necessary
+        if (alerts === 'Yes') {
+          alert('Please enter a valid phone number.');
+        }
+        object.removeClass('validated');
+        object.addClass('not_validated');
       }
-      else {
-        alert('Please enter a 10-digit or 7-digit (no area code) phone number.');
-        $(this).removeClass('validated');
-        $(this).addClass('not_validated');
-      }
+      console.log(numbers);
     }
-    else { // Don't think this is necessary
-      alert('Please enter a valid phone number.');
-      $(this).removeClass('validated');
-      $(this).addClass('not_validated');
-    }
-    console.log(numbers);
-  });
-
-  // Validate email address
-  $("[id*=email]").on('blur', function(e) {
-    let email_regex = $(this).val().match(/(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/);
-
-    if (email_regex != null) {
-      var email = email_regex[0];
-      $(this).removeClass('not_validated');
-      $(this).addClass('validated');
-    }
-
     else {
-      alert('Please enter a valid email address.');
-      $(this).removeClass('validated');
-      $(this).addClass('not_validated');
+      object.removeClass('validated');
+      object.removeClass('not_validated');
     }
-    console.log(email);
+  }
+
+  // Validate email
+  function validateEmail(object, alerts='Yes') {
+
+    if (object.val().trim() !== '') {
+
+      let email_regex = object.val().match(/(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/);
+
+      if (email_regex != null) {
+        var email = email_regex[0];
+        object.removeClass('not_validated');
+        object.addClass('validated');
+      }
+
+      else {
+        if (alerts === 'Yes') {
+          alert('Please enter a valid email address.');
+        }
+        object.removeClass('validated');
+        object.addClass('not_validated');
+      }
+      console.log(email);
+    }
+    else {
+      object.removeClass('validated');
+      object.removeClass('not_validated');
+    }
+  }
+
+
+  // Validate on modality blur
+  $("[id*=modality]").on('change', function(e) {
+    validateButton(e.target.id.substr(1 + e.target.id.lastIndexOf('_')));
   });
 
-  $('input,select').on('blur', function(e) {
+  // Validate on phone number blur
+  $("[id*=phone]").on('blur', function(e) {
+    validatePhone($(this));
+    validateButton(e.target.id.substr(1 + e.target.id.lastIndexOf('_')));
+  });
+
+  // Validate on email address blur
+  $("[id*=email]").on('blur', function(e) {
+    validateEmail($(this));
+    validateButton(e.target.id.substr(1 + e.target.id.lastIndexOf('_')));
+  });
+
+
+  $('input').on('change', function(e) {
 
     var form_indicator = '_' + e.target.id.substr(1 + e.target.id.lastIndexOf('_')); // Get the _# to identify the row to POST
     var selection = $("[id$=" + form_indicator + "]"); // Get all elements of that row
@@ -423,6 +497,39 @@ $(document).ready(function() {
       }
     });
   });
+
+  $('select').on('change', function(e) {
+
+    var form_indicator = '_' + e.target.id.substr(1 + e.target.id.lastIndexOf('_')); // Get the _# to identify the row to POST
+    var selection = $("[id$=" + form_indicator + "]"); // Get all elements of that row
+
+    var status;
+    if (selection.get(5).value == 'Send Notification') {
+      status = 'Unsent';
+    }
+    else {
+      status = 'Send Notification';
+    }
+
+    $.ajax({
+      type: "POST",
+      url: "",
+      data: {
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+        'form_indicator': form_indicator,
+        'slot': selection.get(0).value,
+        'name': selection.get(1).value,
+        'modality': selection.get(2).value,
+        'phone': selection.get(3).value,
+        'email': selection.get(4).value,
+        'status': status,
+      },
+      success: function () {
+        console.log('Schedule POST success')
+      }
+    });
+  });
+
 });
 
 </script>
