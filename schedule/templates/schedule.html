@@ -15,6 +15,8 @@
 
   <body>
 
+    <p class="top_line"></p>
+
     {% for key, form in form_dict.items %}
 
       <div class="container-fluid">
@@ -353,39 +355,40 @@ $(document).ready(function() {
     let status_element = "#id_status_" + row;
     let button_element = "#new_button_" + row;
 
-    if ($(status_element).val() === 'Not Yet Sent') {
+    if ($(status_element).val() === 'Not Yet Sent' || $(button_element).val() === 'Send Notification') {
 
       if ($(modality_element).val() === 'Phone') {
+
         if ($(phone_element).hasClass("validated")) {
           $(status_element).replaceWith("<input id=\"new_button_" + row + "\" class=\"btn btn-primary shrink_send_button\" type=\"button\" value=\"Send Notification\" name=\"send_notification\">");
-          $(button_element).show();
         }
         else {
-          $(button_element).hide(duration=0);
+          $(button_element).replaceWith("<input id=\"id_status_" + row + "\" class=\"form-control form-control-sm\" type=\"text\" value=\"Not Yet Sent\" disabled>")
         }
       }
 
       else if ($(modality_element).val() === 'Email') {
+
         if ($(email_element).hasClass("validated")) {
           $(status_element).replaceWith("<input id=\"new_button_" + row + "\" class=\"btn btn-primary shrink_send_button\" type=\"button\" value=\"Send Notification\" name=\"send_notification\">");
-          $(button_element).show();
         }
         else {
-          $(button_element).hide(duration=0);
+          $(button_element).replaceWith("<input id=\"id_status_" + row + "\" class=\"form-control form-control-sm\" type=\"text\" value=\"Not Yet Sent\" disabled>")
         }
       }
 
       else if ($(modality_element).val() === 'Phone & Email') {
+
         if ($(phone_element).hasClass("validated") && $(email_element).hasClass("validated")) {
           $(status_element).replaceWith("<input id=\"new_button_" + row + "\" class=\"btn btn-primary shrink_send_button\" type=\"button\" value=\"Send Notification\" name=\"send_notification\">");
-          $(button_element).show();
         }
         else {
-          $(button_element).hide(duration=0);
+          $(button_element).replaceWith("<input id=\"id_status_" + row + "\" class=\"form-control form-control-sm\" type=\"text\" value=\"Not Yet Sent\" disabled>")
         }
       }
-      else {
-        $(button_element).hide(duration=0);
+
+      else if ($(modality_element).val() == 'Unspecified' || $(modality_element).val() == 'Do Not Contact') {
+        $(button_element).replaceWith("<input id=\"id_status_" + row + "\" class=\"form-control form-control-sm\" type=\"text\" value=\"Not Yet Sent\" disabled>")
       }
     }
   }
@@ -432,6 +435,7 @@ $(document).ready(function() {
       object.removeClass('not_validated');
     }
   }
+
 
   // Validate email
   function validateEmail(object, alerts='Yes') {
@@ -487,7 +491,7 @@ $(document).ready(function() {
 
     var status;
     if (selection.get(5).value == 'Send Notification') {
-      status = 'Unsent';
+      status = 'Not Yet Sent';
     }
     else {
       status = selection.get(5).value;
@@ -528,17 +532,16 @@ $(document).ready(function() {
         'name': selection.get(1).value,
         'modality': selection.get(2).value,
         'phone': selection.get(3).value,
-        'email': selection.get(4).value,
+        'email': selection.get(4).value, // Status will be set to 'Sent' in views.py
       },
       success: function () {
         console.log('Send message POST success.');
         alert('\'Ready for appointment\' message has been sent!');
       }
     });
-    $(this).hide(2000);
+    // $(selection.get(5)).hide(2000);
+    $(selection.get(5)).replaceWith("<input id=\"id_status_" + form_indicator + "\" class=\"form-control form-control-sm\" type=\"text\" value=\"Sent\" disabled>");
   });
-
-
 });
 
 </script>

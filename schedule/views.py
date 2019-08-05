@@ -7,6 +7,9 @@ from django.core.mail import EmailMessage
 from schedule.models import Schedule
 from schedule.forms import ScheduleForm
 
+from twilio.rest import Client
+from django.conf import settings
+
 import datetime
 current_hour = datetime.datetime.now().hour
 
@@ -323,7 +326,7 @@ def schedule(request):
                        schedule_object.slot_41, schedule_object.slot_42, schedule_object.slot_43, schedule_object.slot_44,
                        schedule_object.slot_45, schedule_object.slot_46, schedule_object.slot_47, schedule_object.slot_48, ]
 
-            name     = request.POST['name']
+            name     = request.POST['name'].capitalize()
             modality = request.POST['modality']
             phone    = request.POST['phone']
             email    = request.POST['email']
@@ -334,22 +337,40 @@ def schedule(request):
 
             schedule_object.save()
 
-            email_body = """\
+
+            def send_email():
+
+                email_body = """\
     <html>
       <head></head>
-      <body>
-        <h2>Hi %s!</h2>
-        <h3>We are now ready for you.</h3> </br>
-        <p>Please click the link below to indicate that you are on your way. Thank you!</p> </br>
-        <a href="https://google.com">Confirm Appointment</a>
+      <body style="border-radius: 20px; padding: 1rem; color: black; font-size: 1.1rem; background-color: #d5e9fb">
+        <h2>Hello %s,</h2>
+        <h3>We are now ready for you!</h3> </br>
+        <p>Please use the button below to indicate that you are on your way. Thank you!</p> </br>
+        <a href="https://google.com"><input type="button" style="border-radius: 9px; padding: 1rem; margin: 1rem 0; color: white; background-color: #1F45FC;" value="Confirm Appointment"></a>
       </body>
     </html>
     """ % (name)
-            email = EmailMessage('Ready for your appointment!', email_body, to=[email])
-            email.content_subtype = "html" # this is the crucial part
-            email.send()
+                email_message = EmailMessage('Ready for your appointment!', email_body, to=[email])
+                email_message.content_subtype = "html" # this is the crucial part
+                email_message.send()
 
-            # print(', '.join([name, modality, phone, email]))
+
+            def send_text():
+                to = '+1' + phone
+                client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
+                response = client.messages.create(
+                    body='\nHello {0},\n\nWe are now ready for you!\n\nPlease use the link below to indicate that you are on your way.\n\nhttps://google.com\n\nThank you!'.format(name),
+                    to=to,
+                    from_=settings.TWILIO_PHONE_NUMBER)
+
+            if modality == 'Email':
+                send_email()
+            elif modality == 'Phone':
+                send_text()
+            elif modality == 'Phone & Email':
+                send_email()
+                send_text()
 
         else:
 
@@ -391,7 +412,7 @@ def schedule(request):
             slot_json = json_dicts[int(request.POST['form_indicator'][1:]) - 1]
 
             slot_json['slot'] = request.POST['slot']
-            slot_json['name'] = request.POST['name']
+            slot_json['name'] = request.POST['name'].capitalize()
             slot_json['modality'] = request.POST['modality']
             slot_json['phone'] = request.POST['phone']
             slot_json['email'] = request.POST['email']

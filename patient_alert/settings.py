@@ -23,6 +23,17 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECRET_KEY = '5q1_bl$_*q_wq-xwn_n7u1+#j&-yc8g($zlv5f+r(80_54xr#o'
 SECRET_KEY = os.environ.get('SECRET_KEY', 'fake_key')
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'nbrhcalerts@gmail.com'
+EMAIL_HOST_PASSWORD = 'nbrhcadmin1'
+
+TWILIO_ACCOUNT_SID = 'AC426ca527987e550a5961ddd8f6b13fff'
+TWILIO_AUTH_TOKEN = '8c3bef8e334923606e5c7d0bc8e8f6f9'
+TWILIO_PHONE_NUMBER= '+17052303221'
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -40,6 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'schedule',
     'import_export',
+    'django_twilio',
 ]
 
 MIDDLEWARE = [
@@ -79,13 +91,6 @@ WSGI_APPLICATION = 'patient_alert.wsgi.application'
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
 #         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 #     }
 # }
@@ -132,13 +137,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_USE_TLS = True
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'nbrhcalerts@gmail.com'
-EMAIL_HOST_PASSWORD = 'nbrhcadmin1'
 
 
 # Static files (CSS, JavaScript, Images)
