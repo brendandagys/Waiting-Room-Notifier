@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Schedule</title>
+    <title>Patient Alert Tool</title>
     <meta charset="utf-8">
 
     {% load static %}
@@ -13,9 +13,18 @@
 
   </head>
 
-  <body>
+  <body class="body_background">
 
-    <p class="top_line"></p>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-11">
+          <h2 class="center_header">Patient Alert Tool</h2>
+        </div>
+        <div class="col-sm-1">
+          <input id="help_button" class="btn btn-secondary help_button" type="button" value="Help" name="help">
+        </div>
+      </div>
+    </div>
 
     {% for key, form in form_dict.items %}
 
@@ -363,7 +372,7 @@ $(document).ready(function() {
           $(status_element).replaceWith("<input id=\"new_button_" + row + "\" class=\"btn btn-primary shrink_send_button\" type=\"button\" value=\"Send Notification\" name=\"send_notification\">");
         }
         else {
-          $(button_element).replaceWith("<input id=\"id_status_" + row + "\" class=\"form-control form-control-sm\" type=\"text\" value=\"Not Yet Sent\" disabled>")
+          $(button_element).replaceWith("<input id=\"id_status_" + row + "\" class=\"form-control form-control-sm center_text\" type=\"text\" value=\"Not Yet Sent\" disabled>")
         }
       }
 
@@ -373,7 +382,7 @@ $(document).ready(function() {
           $(status_element).replaceWith("<input id=\"new_button_" + row + "\" class=\"btn btn-primary shrink_send_button\" type=\"button\" value=\"Send Notification\" name=\"send_notification\">");
         }
         else {
-          $(button_element).replaceWith("<input id=\"id_status_" + row + "\" class=\"form-control form-control-sm\" type=\"text\" value=\"Not Yet Sent\" disabled>")
+          $(button_element).replaceWith("<input id=\"id_status_" + row + "\" class=\"form-control form-control-sm center_text\" type=\"text\" value=\"Not Yet Sent\" disabled>")
         }
       }
 
@@ -383,12 +392,12 @@ $(document).ready(function() {
           $(status_element).replaceWith("<input id=\"new_button_" + row + "\" class=\"btn btn-primary shrink_send_button\" type=\"button\" value=\"Send Notification\" name=\"send_notification\">");
         }
         else {
-          $(button_element).replaceWith("<input id=\"id_status_" + row + "\" class=\"form-control form-control-sm\" type=\"text\" value=\"Not Yet Sent\" disabled>")
+          $(button_element).replaceWith("<input id=\"id_status_" + row + "\" class=\"form-control form-control-sm center_text\" type=\"text\" value=\"Not Yet Sent\" disabled>")
         }
       }
 
       else if ($(modality_element).val() == 'Unspecified' || $(modality_element).val() == 'Do Not Contact') {
-        $(button_element).replaceWith("<input id=\"id_status_" + row + "\" class=\"form-control form-control-sm\" type=\"text\" value=\"Not Yet Sent\" disabled>")
+        $(button_element).replaceWith("<input id=\"id_status_" + row + "\" class=\"form-control form-control-sm center_text\" type=\"text\" value=\"Not Yet Sent\" disabled>")
       }
     }
   }
@@ -428,7 +437,6 @@ $(document).ready(function() {
         object.removeClass('validated');
         object.addClass('not_validated');
       }
-      console.log(numbers);
     }
     else {
       object.removeClass('validated');
@@ -457,7 +465,6 @@ $(document).ready(function() {
         object.removeClass('validated');
         object.addClass('not_validated');
       }
-      console.log(email);
     }
     else {
       object.removeClass('validated');
@@ -517,9 +524,23 @@ $(document).ready(function() {
   });
 
 
-  $(document).on('click', ":button", function(e) {
+  $("#help_button").on('click', function(e) {
+    alert('When a patient checks in, if they wish, record their name and contact preferences/details.\n\nOnce contact details are validated, a \'Send Notification\' button will appear in place of the \'Not Yet Sent\' status. Click it to notify the patient that the clinic is ready for them.\n\nIf/when they respond, an alert will appear to notify you and the status will change from \'Sent\' to \'CONFIRMED\'.');
+  });
+
+  $(document).on('click', ":button:not('#help_button')", function(e) { // Exclude the help button
+    console.log('test');
     var form_indicator = '_' + e.target.id.substr(1 + e.target.id.lastIndexOf('_')); // Get the _# to identify the row to POST
     var selection = $("[id$=" + form_indicator + "]"); // Get all elements of that row
+
+    var name;
+
+    if (selection.get(1).value.trim() === '') {
+      name = 'there';
+    }
+    else {
+      name = selection.get(1).value.trim();
+    }
 
     $.ajax({
       type: "POST",
@@ -529,19 +550,53 @@ $(document).ready(function() {
         'notify': 'Yes',
         'form_indicator': form_indicator,
         'slot': selection.get(0).value,
-        'name': selection.get(1).value,
+        'name': name,
         'modality': selection.get(2).value,
         'phone': selection.get(3).value,
         'email': selection.get(4).value, // Status will be set to 'Sent' in views.py
       },
       success: function () {
         console.log('Send message POST success.');
-        alert('\'Ready for appointment\' message has been sent!');
+        alert('\'Ready For Appointment\' message has been sent!');
       }
     });
     // $(selection.get(5)).hide(2000);
-    $(selection.get(5)).replaceWith("<input id=\"id_status_" + form_indicator + "\" class=\"form-control form-control-sm\" type=\"text\" value=\"Sent\" disabled>");
+    $(selection.get(5)).replaceWith("<input id=\"id_status_" + form_indicator + "\" class=\"form-control form-control-sm center_text\" type=\"text\" value=\"Sent\" disabled>");
   });
+
+  // Repeatedly check for new status values, and raise an alert if patient is now 'CONFIRMED'
+  var update_looper = setInterval(status_update, 2000);
+  function status_update() {
+
+    $.ajax({
+      type: 'GET',
+      url: 'update/',
+      data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+      success: function(response) {
+        $("[id*=status]").each(function() {
+          // Get the row number
+          var row = $(this).attr("id").substr(1 + $(this).attr("id").lastIndexOf('_'));
+
+          var name_element = "#id_name_" + row;
+          var incoming_status = response['status_' + row];
+
+          if (incoming_status === 'CONFIRMED') {
+            if ($(this).val() === 'Sent') {
+
+              // console.log('Row: ' + row);
+              // console.log('Status value: ' + $(this).val());
+              // console.log('Name element: ' + name_element);
+              // console.log('Incoming status: ' + incoming_status);
+              $(this).val('CONFIRMED');
+
+              alert($(name_element).val() + ' is on their way.');
+            }
+            $(this).addClass("green_text");
+          }
+        });
+      }
+    });
+  }
 });
 
 </script>

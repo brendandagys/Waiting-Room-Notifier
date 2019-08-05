@@ -14,13 +14,17 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, re_path, include
 from django.views.generic import RedirectView
 from django.conf import settings
 from django.conf.urls.static import static
 
+from schedule.views import handle_patient_responses, check_for_status_update
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    re_path(r'.*confirm.*', handle_patient_responses, name='handle_patient_responses'),
+    re_path(r'.*update.*', check_for_status_update, name='check_for_status_update'),
     path('schedule/', include('schedule.urls')),
     path('', RedirectView.as_view(url='/schedule/', permanent=True)), # Add URL maps to redirect the base URL to 'schedule' application
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 
 from django.core.mail import EmailMessage
 
@@ -131,15 +131,106 @@ def get_default_json(slot_number):
         'modality': 'Unspecified',
         'phone': '',
         'email': '',
-        'status': 'Not Yet Sent', # Not Yet Sent, Sent, Accepted, Declined
+        'status': 'Not Yet Sent', # Not Yet Sent, Sent, Confirmed
     }
+
+
+def check_for_status_update(request):
+
+    if request.method == 'GET':
+
+        if (Schedule.objects.last() is None) or (Schedule.objects.last().date != datetime.date.today()):
+            schedule_object = Schedule()
+        else:
+            schedule_object = Schedule.objects.all().order_by('-date')[:1][0]
+
+        return JsonResponse({ 'status_1' : schedule_object.slot_1['status'],
+                              'status_2' : schedule_object.slot_2['status'],
+                              'status_3' : schedule_object.slot_3['status'],
+                              'status_4' : schedule_object.slot_4['status'],
+                              'status_5' : schedule_object.slot_5['status'],
+                              'status_6' : schedule_object.slot_6['status'],
+                              'status_7' : schedule_object.slot_7['status'],
+                              'status_8' : schedule_object.slot_8['status'],
+                              'status_9' : schedule_object.slot_9['status'],
+                              'status_10': schedule_object.slot_10['status'],
+                              'status_11': schedule_object.slot_11['status'],
+                              'status_12': schedule_object.slot_12['status'],
+                              'status_13': schedule_object.slot_13['status'],
+                              'status_14': schedule_object.slot_14['status'],
+                              'status_15': schedule_object.slot_15['status'],
+                              'status_16': schedule_object.slot_16['status'],
+                              'status_17': schedule_object.slot_17['status'],
+                              'status_18': schedule_object.slot_18['status'],
+                              'status_19': schedule_object.slot_19['status'],
+                              'status_20': schedule_object.slot_20['status'],
+                              'status_21': schedule_object.slot_21['status'],
+                              'status_22': schedule_object.slot_22['status'],
+                              'status_23': schedule_object.slot_23['status'],
+                              'status_24': schedule_object.slot_24['status'],
+                              'status_25': schedule_object.slot_25['status'],
+                              'status_26': schedule_object.slot_26['status'],
+                              'status_27': schedule_object.slot_27['status'],
+                              'status_28': schedule_object.slot_28['status'],
+                              'status_29': schedule_object.slot_29['status'],
+                              'status_30': schedule_object.slot_30['status'],
+                              'status_31': schedule_object.slot_31['status'],
+                              'status_32': schedule_object.slot_32['status'],
+                              'status_33': schedule_object.slot_33['status'],
+                              'status_34': schedule_object.slot_34['status'],
+                              'status_35': schedule_object.slot_35['status'],
+                              'status_36': schedule_object.slot_36['status'],
+                              'status_37': schedule_object.slot_37['status'],
+                              'status_38': schedule_object.slot_38['status'],
+                              'status_39': schedule_object.slot_39['status'],
+                              'status_40': schedule_object.slot_40['status'],
+                              'status_41': schedule_object.slot_41['status'],
+                              'status_42': schedule_object.slot_42['status'],
+                              'status_43': schedule_object.slot_43['status'],
+                              'status_44': schedule_object.slot_44['status'],
+                              'status_45': schedule_object.slot_45['status'],
+                              'status_46': schedule_object.slot_46['status'],
+                              'status_47': schedule_object.slot_47['status'],
+                              'status_48': schedule_object.slot_48['status'], })
+
+
+def handle_patient_responses(request):
+
+    if request.method == 'GET':
+
+        # Get the full URL
+        url = request.build_absolute_uri()
+
+        # Split the URL string on '/' and take the number at the end
+        form_indicator = int(url.split('/')[-1])
+
+        schedule_object = Schedule.objects.all().order_by('-date')[:1][0]
+
+        objects = [schedule_object.slot_1, schedule_object.slot_2, schedule_object.slot_3, schedule_object.slot_4,
+                   schedule_object.slot_5, schedule_object.slot_6, schedule_object.slot_7, schedule_object.slot_8,
+                   schedule_object.slot_9, schedule_object.slot_10, schedule_object.slot_11, schedule_object.slot_12,
+                   schedule_object.slot_13, schedule_object.slot_14, schedule_object.slot_15, schedule_object.slot_16,
+                   schedule_object.slot_17, schedule_object.slot_18, schedule_object.slot_19, schedule_object.slot_20,
+                   schedule_object.slot_21, schedule_object.slot_22, schedule_object.slot_23, schedule_object.slot_24,
+                   schedule_object.slot_25, schedule_object.slot_26, schedule_object.slot_27, schedule_object.slot_28,
+                   schedule_object.slot_29, schedule_object.slot_30, schedule_object.slot_31, schedule_object.slot_32,
+                   schedule_object.slot_33, schedule_object.slot_34, schedule_object.slot_35, schedule_object.slot_36,
+                   schedule_object.slot_37, schedule_object.slot_38, schedule_object.slot_39, schedule_object.slot_40,
+                   schedule_object.slot_41, schedule_object.slot_42, schedule_object.slot_43, schedule_object.slot_44,
+                   schedule_object.slot_45, schedule_object.slot_46, schedule_object.slot_47, schedule_object.slot_48, ]
+
+        objects[form_indicator - 1]['status'] = 'CONFIRMED'
+
+        schedule_object.save()
+
+    return HttpResponse()
 
 # Create your views here.
 def schedule(request):
 
     if request.method == 'GET':
 
-        if Schedule.objects.last() is None or Schedule.objects.last().date != datetime.date.today():
+        if (Schedule.objects.last() is None) or (Schedule.objects.last().date != datetime.date.today()):
 
             form_1  = ScheduleForm(initial=get_default_json(1))
             form_2  = ScheduleForm(initial=get_default_json(2))
@@ -326,12 +417,17 @@ def schedule(request):
                        schedule_object.slot_41, schedule_object.slot_42, schedule_object.slot_43, schedule_object.slot_44,
                        schedule_object.slot_45, schedule_object.slot_46, schedule_object.slot_47, schedule_object.slot_48, ]
 
+            slot     = request.POST['form_indicator'][1:] # Begins with '_'
             name     = request.POST['name'].capitalize()
             modality = request.POST['modality']
             phone    = request.POST['phone']
             email    = request.POST['email']
 
-            slot_json = json_dicts[int(request.POST['form_indicator'][1:]) - 1]
+            # Keep 'there' lower-case when no name is provided in the form.
+            if name == 'There':
+                name = 'there'
+
+            slot_json = json_dicts[int(slot) - 1]
 
             slot_json['status'] = 'Sent'
 
@@ -344,13 +440,13 @@ def schedule(request):
     <html>
       <head></head>
       <body style="border-radius: 20px; padding: 1rem; color: black; font-size: 1.1rem; background-color: #d5e9fb">
-        <h2>Hello %s,</h2>
+        <h2>Hello {0},</h2>
         <h3>We are now ready for you!</h3> </br>
         <p>Please use the button below to indicate that you are on your way. Thank you!</p> </br>
-        <a href="https://google.com"><input type="button" style="border-radius: 9px; padding: 1rem; margin: 1rem 0; color: white; background-color: #1F45FC;" value="Confirm Appointment"></a>
+        <a href="NBRHCalert.herokuapp.com/confirm/{1}"><input type="button" style="border-radius: 9px; padding: 1rem; margin: 1rem 0; color: white; background-color: #1F45FC;" value="Confirm Appointment"></a>
       </body>
     </html>
-    """ % (name)
+    """.format(name, slot)
                 email_message = EmailMessage('Ready for your appointment!', email_body, to=[email])
                 email_message.content_subtype = "html" # this is the crucial part
                 email_message.send()
@@ -360,7 +456,7 @@ def schedule(request):
                 to = '+1' + phone
                 client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
                 response = client.messages.create(
-                    body='\nHello {0},\n\nWe are now ready for you!\n\nPlease use the link below to indicate that you are on your way.\n\nhttps://google.com\n\nThank you!'.format(name),
+                    body='\nHello {0},\n\nWe are now ready for you!\n\nPlease use the link below to indicate that you are on your way.\n\nNBRHCalert.herokuapp.com/confirm/{1}\n\nThank you!'.format(name, slot),
                     to=to,
                     from_=settings.TWILIO_PHONE_NUMBER)
 

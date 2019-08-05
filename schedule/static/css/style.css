@@ -32,3 +32,28 @@ select {
 .not_validated {
   background-color: lightcoral;
 }
+
+.green_text {
+  color: red; // limegreen
+}
+
+.center_header {
+  text-align: center;
+}
+
+.center_text {
+  text-align: center;
+}
+
+.help_button {
+  float: right;
+  margin-right: 15px;
+  margin-top: 7px;
+  height: 2rem;
+  line-height: 5px;
+  border-radius: 9px;
+}
+
+.body_background {
+  background-color: #F4F4F4;
+}

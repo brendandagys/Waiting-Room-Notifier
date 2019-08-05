@@ -12,7 +12,7 @@ def get_default_json():
         'modality': 'Unspecified',
         'phone': '',
         'email': '',
-        'status': 'Not Yet Sent', # Not Yet Sent, Sent, Accepted, Declined
+        'status': 'Not Yet Sent', # Not Yet Sent, Sent, Confirmed
     }
 
 # Create your models here.

@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 
+# SECURE_SSL_REDIRECT = True
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -31,7 +33,8 @@ EMAIL_HOST_USER = 'nbrhcalerts@gmail.com'
 EMAIL_HOST_PASSWORD = 'nbrhcadmin1'
 
 TWILIO_ACCOUNT_SID = 'AC426ca527987e550a5961ddd8f6b13fff'
-TWILIO_AUTH_TOKEN = '8c3bef8e334923606e5c7d0bc8e8f6f9'
+# TWILIO_AUTH_TOKEN = '8c3bef8e334923606e5c7d0bc8e8f6f9'
+TWILIO_AUTH_TOKEN = '407f3c2b55b3d8f82ae78cc16bf2e759'
 TWILIO_PHONE_NUMBER= '+17052303221'
 
 # SECURITY WARNING: don't run with debug turned on in production!
