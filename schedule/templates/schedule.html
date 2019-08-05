@@ -347,31 +347,45 @@ $(document).ready(function() {
   // Validate button display
   function validateButton(row) {
 
-    let display_button = 'No';
-
     let modality_element = "#id_modality_" + row;
     let phone_element = "#id_phone_" + row;
     let email_element = "#id_email_" + row;
     let status_element = "#id_status_" + row;
+    let button_element = "#new_button_" + row;
 
-    if ($(modality_element).val() == 'Phone') {
-      if ($(phone_element).hasClass("validated")) {
-        $(status_element).replaceWith("<input id=\"new_button_" + row + "\" class=\"btn btn-primary shrink_send_button\" type=\"button\" value=\"Send Notification\" name=\"send_notification\">");
-        console.log('PHONE WORKED');
+    if ($(status_element).val() === 'Not Yet Sent') {
+
+      if ($(modality_element).val() === 'Phone') {
+        if ($(phone_element).hasClass("validated")) {
+          $(status_element).replaceWith("<input id=\"new_button_" + row + "\" class=\"btn btn-primary shrink_send_button\" type=\"button\" value=\"Send Notification\" name=\"send_notification\">");
+          $(button_element).show();
+        }
+        else {
+          $(button_element).hide(duration=0);
+        }
       }
-    }
 
-    else if ($(modality_element).val() == 'Email') {
-      if ($(email_element).hasClass("validated")) {
-        $(status_element).replaceWith("<input id=\"new_button_" + row + "\" class=\"btn btn-primary shrink_send_button\" type=\"button\" value=\"Send Notification\" name=\"send_notification\">");
-        console.log('EMAIL WORKED');
+      else if ($(modality_element).val() === 'Email') {
+        if ($(email_element).hasClass("validated")) {
+          $(status_element).replaceWith("<input id=\"new_button_" + row + "\" class=\"btn btn-primary shrink_send_button\" type=\"button\" value=\"Send Notification\" name=\"send_notification\">");
+          $(button_element).show();
+        }
+        else {
+          $(button_element).hide(duration=0);
+        }
       }
-    }
 
-    else if ($(modality_element).val() == 'Phone & Email') {
-      if ($(phone_element).hasClass("validated") && $(email_element).hasClass("validated")) {
-        $(status_element).replaceWith("<input id=\"new_button_" + row + "\" class=\"btn btn-primary shrink_send_button\" type=\"button\" value=\"Send Notification\" name=\"send_notification\">");
-        console.log('BOTH WORKED');
+      else if ($(modality_element).val() === 'Phone & Email') {
+        if ($(phone_element).hasClass("validated") && $(email_element).hasClass("validated")) {
+          $(status_element).replaceWith("<input id=\"new_button_" + row + "\" class=\"btn btn-primary shrink_send_button\" type=\"button\" value=\"Send Notification\" name=\"send_notification\">");
+          $(button_element).show();
+        }
+        else {
+          $(button_element).hide(duration=0);
+        }
+      }
+      else {
+        $(button_element).hide(duration=0);
       }
     }
   }
@@ -449,24 +463,24 @@ $(document).ready(function() {
 
 
   // Validate on modality blur
-  $("[id*=modality]").on('change', function(e) {
+  $(document).on('change', "[id*=modality]", function(e) {
     validateButton(e.target.id.substr(1 + e.target.id.lastIndexOf('_')));
   });
 
   // Validate on phone number blur
-  $("[id*=phone]").on('blur', function(e) {
+  $(document).on('blur', "[id*=phone]", function(e) {
     validatePhone($(this));
     validateButton(e.target.id.substr(1 + e.target.id.lastIndexOf('_')));
   });
 
   // Validate on email address blur
-  $("[id*=email]").on('blur', function(e) {
+  $(document).on('blur', "[id*=email]", function(e) {
     validateEmail($(this));
     validateButton(e.target.id.substr(1 + e.target.id.lastIndexOf('_')));
   });
 
 
-  $('input').on('change', function(e) {
+  $('input,select').on('change', function(e) {
 
     var form_indicator = '_' + e.target.id.substr(1 + e.target.id.lastIndexOf('_')); // Get the _# to identify the row to POST
     var selection = $("[id$=" + form_indicator + "]"); // Get all elements of that row
@@ -476,7 +490,7 @@ $(document).ready(function() {
       status = 'Unsent';
     }
     else {
-      status = 'Send Notification';
+      status = selection.get(5).value;
     }
 
     $.ajax({
@@ -493,42 +507,37 @@ $(document).ready(function() {
         'status': status,
       },
       success: function () {
-        console.log('Schedule POST success')
+        console.log('Schedule POST success.');
       }
     });
   });
 
-  $('select').on('change', function(e) {
 
+  $(document).on('click', ":button", function(e) {
     var form_indicator = '_' + e.target.id.substr(1 + e.target.id.lastIndexOf('_')); // Get the _# to identify the row to POST
     var selection = $("[id$=" + form_indicator + "]"); // Get all elements of that row
-
-    var status;
-    if (selection.get(5).value == 'Send Notification') {
-      status = 'Unsent';
-    }
-    else {
-      status = 'Send Notification';
-    }
 
     $.ajax({
       type: "POST",
       url: "",
       data: {
         csrfmiddlewaretoken: '{{ csrf_token }}',
+        'notify': 'Yes',
         'form_indicator': form_indicator,
         'slot': selection.get(0).value,
         'name': selection.get(1).value,
         'modality': selection.get(2).value,
         'phone': selection.get(3).value,
         'email': selection.get(4).value,
-        'status': status,
       },
       success: function () {
-        console.log('Schedule POST success')
+        console.log('Send message POST success.');
+        alert('\'Ready for appointment\' message has been sent!');
       }
     });
+    $(this).hide(2000);
   });
+
 
 });
 
