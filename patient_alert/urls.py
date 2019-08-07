@@ -23,6 +23,7 @@ from schedule.views import handle_patient_responses, check_for_status_update
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('accounts/', include('django.contrib.auth.urls')),
     re_path(r'.*confirm.*', handle_patient_responses, name='handle_patient_responses'),
     re_path(r'.*update.*', check_for_status_update, name='check_for_status_update'),
     path('schedule/', include('schedule.urls')),

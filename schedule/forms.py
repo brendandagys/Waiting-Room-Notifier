@@ -2,11 +2,10 @@ from django import forms
 from schedule.models import Schedule
 
 MODALITY_CHOICES = (
-    ('Unspecified', 'Unspecified'),
-    ('Do Not Contact', 'Do Not Contact'),
-    ('Phone', 'Phone'),
-    ('Email', 'Email'),
-    ('Phone & Email', 'Phone & Email'),
+    ('Unspecified', 'Contact Preference...'),
+    ('Phone', 'PHONE'),
+    ('Email', 'EMAIL'),
+    ('Phone & Email', 'PHONE & EMAIL'),
 )
 
 class ScheduleForm(forms.Form):

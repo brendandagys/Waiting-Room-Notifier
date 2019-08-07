@@ -17,12 +17,10 @@
 
     <div class="container-fluid">
       <div class="row">
-        <div class="col-sm-11">
+        <div class="col-sm-12">
           <h2 class="center_header">Patient Alert Tool</h2>
         </div>
-        <div class="col-sm-1">
-          <input id="help_button" class="btn btn-secondary help_button" type="button" value="Help" name="help">
-        </div>
+      <input id="help_button" class="btn btn-secondary help_button" type="button" value="Help" name="help">
       </div>
     </div>
 
@@ -396,7 +394,7 @@ $(document).ready(function() {
         }
       }
 
-      else if ($(modality_element).val() == 'Unspecified' || $(modality_element).val() == 'Do Not Contact') {
+      else if ($(modality_element).val() == 'Unspecified') {
         $(button_element).replaceWith("<input id=\"id_status_" + row + "\" class=\"form-control form-control-sm center_text\" type=\"text\" value=\"Not Yet Sent\" disabled>")
       }
     }
@@ -518,7 +516,7 @@ $(document).ready(function() {
         'status': status,
       },
       success: function () {
-        console.log('Schedule POST success.');
+        console.log('Schedule POST success of row ' + e.target.id.substr(1 + e.target.id.lastIndexOf('_')) + '.');
       }
     });
   });
@@ -529,7 +527,6 @@ $(document).ready(function() {
   });
 
   $(document).on('click', ":button:not('#help_button')", function(e) { // Exclude the help button
-    console.log('test');
     var form_indicator = '_' + e.target.id.substr(1 + e.target.id.lastIndexOf('_')); // Get the _# to identify the row to POST
     var selection = $("[id$=" + form_indicator + "]"); // Get all elements of that row
 
@@ -556,7 +553,7 @@ $(document).ready(function() {
         'email': selection.get(4).value, // Status will be set to 'Sent' in views.py
       },
       success: function () {
-        console.log('Send message POST success.');
+        console.log('Send notification success to patient at row ' + e.target.id.substr(1 + e.target.id.lastIndexOf('_')) + '.');
         alert('\'Ready For Appointment\' message has been sent!');
       }
     });

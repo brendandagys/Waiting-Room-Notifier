@@ -1,5 +1,8 @@
 from django.shortcuts import render
 
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
+
 from django.http import HttpResponse, JsonResponse
 
 from django.core.mail import EmailMessage
@@ -135,6 +138,7 @@ def get_default_json(slot_number):
     }
 
 
+@login_required
 def check_for_status_update(request):
 
     if request.method == 'GET':
@@ -194,6 +198,7 @@ def check_for_status_update(request):
                               'status_48': schedule_object.slot_48['status'], })
 
 
+@login_required # This will probably break the notification links
 def handle_patient_responses(request):
 
     if request.method == 'GET':
@@ -225,7 +230,8 @@ def handle_patient_responses(request):
 
     return HttpResponse()
 
-# Create your views here.
+
+# @login_required
 def schedule(request):
 
     if request.method == 'GET':

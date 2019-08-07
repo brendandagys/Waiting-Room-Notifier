@@ -38,6 +38,7 @@ select {
 }
 
 .center_header {
+  margin-top: 5px;
   text-align: center;
 }
 
@@ -46,9 +47,11 @@ select {
 }
 
 .help_button {
+  position: absolute;
   float: right;
-  margin-right: 15px;
-  margin-top: 7px;
+  margin-top: 7px; */
+  top: 6.75px;
+  left: 1rem;
   height: 2rem;
   line-height: 5px;
   border-radius: 9px;
