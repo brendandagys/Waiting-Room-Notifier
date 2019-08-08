@@ -14,6 +14,7 @@ from twilio.rest import Client
 from django.conf import settings
 
 import datetime
+date = datetime.date.today()
 current_hour = datetime.datetime.now().hour
 
 slots = ['7:00 - 7:15', '7:15 - 7:30', '7:30 - 7:45', '7:45 - 8:00',
@@ -198,7 +199,7 @@ def check_for_status_update(request):
                               'status_48': schedule_object.slot_48['status'], })
 
 
-@login_required # This will probably break the notification links
+# @login_required # This will probably break the notification links
 def handle_patient_responses(request):
 
     if request.method == 'GET':
@@ -207,7 +208,7 @@ def handle_patient_responses(request):
         url = request.build_absolute_uri()
 
         # Split the URL string on '/' and take the number at the end
-        form_indicator = int(url.split('/')[-1])
+        form_indicator = int(url.split('/')[-1]) - (date.month * date.day)
 
         schedule_object = Schedule.objects.all().order_by('-date')[:1][0]
 
@@ -228,10 +229,9 @@ def handle_patient_responses(request):
 
         schedule_object.save()
 
-    return HttpResponse()
+    return render(request, 'thankyou.html')
 
-
-# @login_required
+@login_required
 def schedule(request):
 
     if request.method == 'GET':
@@ -423,7 +423,7 @@ def schedule(request):
                        schedule_object.slot_41, schedule_object.slot_42, schedule_object.slot_43, schedule_object.slot_44,
                        schedule_object.slot_45, schedule_object.slot_46, schedule_object.slot_47, schedule_object.slot_48, ]
 
-            slot     = request.POST['form_indicator'][1:] # Begins with '_'
+            slot     = (date.month * date.day) + int(request.POST['form_indicator'][1:]) # Slice it because it begins with '_'
             name     = request.POST['name'].capitalize()
             modality = request.POST['modality']
             phone    = request.POST['phone']
