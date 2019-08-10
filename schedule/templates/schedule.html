@@ -553,12 +553,13 @@ $(document).ready(function() {
         'email': selection.get(4).value, // Status will be set to 'Sent' in views.py
       },
       success: function () {
-        console.log('Send notification success to patient at row ' + e.target.id.substr(1 + e.target.id.lastIndexOf('_')) + '.');
+        console.log('Send notification success to patient at row ' + e.target.id.substr(1 + e.target.id.lastIndexOf('_')) + '.');z
+        $(selection.get(5)).replaceWith("<input id=\"id_status_" + form_indicator + "\" class=\"form-control form-control-sm center_text\" type=\"text\" value=\"Sent\" disabled>");
         alert('\'Ready For Appointment\' message has been sent!');
       }
     });
     // $(selection.get(5)).hide(2000);
-    $(selection.get(5)).replaceWith("<input id=\"id_status_" + form_indicator + "\" class=\"form-control form-control-sm center_text\" type=\"text\" value=\"Sent\" disabled>");
+    // $(selection.get(5)).replaceWith("<input id=\"id_status_" + form_indicator + "\" class=\"form-control form-control-sm center_text\" type=\"text\" value=\"Sent\" disabled>");
   });
 
   // Repeatedly check for new status values, and raise an alert if patient is now 'CONFIRMED'
@@ -586,9 +587,10 @@ $(document).ready(function() {
               // console.log('Incoming status: ' + incoming_status);
               $(this).val('CONFIRMED');
 
-              alert($(name_element).val() + ' is on their way.');
+              var name = $(name_element).val().trim().split(' ').map((s) => s.charAt(0).toUpperCase() + s.substring(1)).join(' ');
+              alert(name + ' is on their way.');
             }
-            $(this).addClass("green_text");
+            $(this).addClass("red_text");
           }
         });
       }

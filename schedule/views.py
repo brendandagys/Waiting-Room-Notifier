@@ -13,9 +13,10 @@ from schedule.forms import ScheduleForm
 from twilio.rest import Client
 from django.conf import settings
 
+import re
 import datetime
 date = datetime.date.today()
-current_hour = datetime.datetime.now().hour
+# current_hour = datetime.datetime.now().hour
 
 slots = ['7:00 - 7:15', '7:15 - 7:30', '7:30 - 7:45', '7:45 - 8:00',
          '8:00 - 8:15', '8:15 - 8:30', '8:30 - 8:45', '8:45 - 9:00',
@@ -199,16 +200,65 @@ def check_for_status_update(request):
                               'status_48': schedule_object.slot_48['status'], })
 
 
-# @login_required # This will probably break the notification links
 def handle_patient_responses(request):
 
     if request.method == 'GET':
+
+        decoder = { 217: 1,
+                    94: 2,
+                    33: 3,
+                    65: 4,
+                    210: 5,
+                    38: 6,
+                    51: 7,
+                    176: 8,
+                    154: 9,
+                    77: 10,
+                    66: 11,
+                    114: 12,
+                    177: 13,
+                    111: 14,
+                    86: 15,
+                    74: 16,
+                    104: 17,
+                    186: 18,
+                    78: 19,
+                    37: 20,
+                    222: 21,
+                    12: 22,
+                    75: 23,
+                    55: 24,
+                    46: 25,
+                    57: 26,
+                    95: 27,
+                    60: 28,
+                    59: 29,
+                    63: 30,
+                    99: 31,
+                    170: 32,
+                    44: 33,
+                    32: 34,
+                    61: 35,
+                    151: 36,
+                    189: 37,
+                    147: 38,
+                    80: 39,
+                    234: 40,
+                    85: 41,
+                    35: 42,
+                    43: 43,
+                    202: 44,
+                    81: 45,
+                    93: 46,
+                    228: 47,
+                    24: 48 }
 
         # Get the full URL
         url = request.build_absolute_uri()
 
         # Split the URL string on '/' and take the number at the end
-        form_indicator = int(url.split('/')[-1]) - (date.month * date.day)
+        form_indicator = int(int(url.split('/')[-2]) / (date.month * date.day))
+        form_indicator = decoder[form_indicator]
 
         schedule_object = Schedule.objects.all().order_by('-date')[:1][0]
 
@@ -229,7 +279,7 @@ def handle_patient_responses(request):
 
         schedule_object.save()
 
-    return render(request, 'thankyou.html')
+        return render(request, 'thankyou.html')
 
 @login_required
 def schedule(request):
@@ -408,6 +458,55 @@ def schedule(request):
 
         if 'notify' in request.POST:
 
+            encoder = { 1: date.month * date.day * 217,
+                        2: date.month * date.day * 94,
+                        3: date.month * date.day * 33,
+                        4: date.month * date.day * 65,
+                        5: date.month * date.day * 210,
+                        6: date.month * date.day * 38,
+                        7: date.month * date.day * 51,
+                        8: date.month * date.day * 176,
+                        9: date.month * date.day * 154,
+                        10: date.month * date.day * 77,
+                        11: date.month * date.day * 66,
+                        12: date.month * date.day * 114,
+                        13: date.month * date.day * 177,
+                        14: date.month * date.day * 111,
+                        15: date.month * date.day * 86,
+                        16: date.month * date.day * 74,
+                        17: date.month * date.day * 104,
+                        18: date.month * date.day * 186,
+                        19: date.month * date.day * 78,
+                        20: date.month * date.day * 37,
+                        21: date.month * date.day * 222,
+                        22: date.month * date.day * 12,
+                        23: date.month * date.day * 75,
+                        24: date.month * date.day * 55,
+                        25: date.month * date.day * 46,
+                        26: date.month * date.day * 57,
+                        27: date.month * date.day * 95,
+                        28: date.month * date.day * 60,
+                        29: date.month * date.day * 59,
+                        30: date.month * date.day * 63,
+                        31: date.month * date.day * 99,
+                        32: date.month * date.day * 170,
+                        33: date.month * date.day * 44,
+                        34: date.month * date.day * 32,
+                        35: date.month * date.day * 61,
+                        36: date.month * date.day * 151,
+                        37: date.month * date.day * 189,
+                        38: date.month * date.day * 147,
+                        39: date.month * date.day * 80,
+                        40: date.month * date.day * 234,
+                        41: date.month * date.day * 85,
+                        42: date.month * date.day * 35,
+                        43: date.month * date.day * 43,
+                        44: date.month * date.day * 202,
+                        45: date.month * date.day * 81,
+                        46: date.month * date.day * 93,
+                        47: date.month * date.day * 228,
+                        48: date.month * date.day * 24, }
+
             schedule_object = Schedule.objects.all().order_by('-date')[:1][0]
 
             json_dicts = [schedule_object.slot_1, schedule_object.slot_2, schedule_object.slot_3, schedule_object.slot_4,
@@ -423,17 +522,23 @@ def schedule(request):
                        schedule_object.slot_41, schedule_object.slot_42, schedule_object.slot_43, schedule_object.slot_44,
                        schedule_object.slot_45, schedule_object.slot_46, schedule_object.slot_47, schedule_object.slot_48, ]
 
-            slot     = (date.month * date.day) + int(request.POST['form_indicator'][1:]) # Slice it because it begins with '_'
-            name     = request.POST['name'].capitalize()
+            slot     = int(request.POST['form_indicator'][1:]) # Slice it because it begins with '_'
+            name     = request.POST['name']
             modality = request.POST['modality']
             phone    = request.POST['phone']
             email    = request.POST['email']
+
+            # Change the indicator to a semi-random number, the 48-set of which change every day, so that no one can meddle
+            slot_encoded = encoder[slot]
 
             # Keep 'there' lower-case when no name is provided in the form.
             if name == 'There':
                 name = 'there'
 
-            slot_json = json_dicts[int(slot) - 1]
+            # Use regex to limit spaces to 1, split the resulting string on whitespaces, then capitalize each segment
+            name = ' '.join([x.capitalize() for x in re.sub('\s{2,}', ' ', name).split(' ')])
+
+            slot_json = json_dicts[slot - 1]
 
             slot_json['status'] = 'Sent'
 
@@ -449,10 +554,10 @@ def schedule(request):
         <h2>Hello {0},</h2>
         <h3>We are now ready for you!</h3> </br>
         <p>Please use the button below to indicate that you are on your way. Thank you!</p> </br>
-        <a href="NBRHCalert.herokuapp.com/confirm/{1}"><input type="button" style="border-radius: 9px; padding: 1rem; margin: 1rem 0; color: white; background-color: #1F45FC;" value="Confirm Appointment"></a>
+        <a href="NBRHCalert.herokuapp.com/{1}/confirm"><input type="button" style="border-radius: 9px; padding: 1rem; margin: 1rem 0; color: white; background-color: #1F45FC;" value="Confirm Appointment"></a>
       </body>
     </html>
-    """.format(name, slot)
+    """.format(name, slot_encoded)
                 email_message = EmailMessage('Ready for your appointment!', email_body, to=[email])
                 email_message.content_subtype = "html" # this is the crucial part
                 email_message.send()
@@ -462,7 +567,7 @@ def schedule(request):
                 to = '+1' + phone
                 client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
                 response = client.messages.create(
-                    body='\nHello {0},\n\nWe are now ready for you!\n\nPlease use the link below to indicate that you are on your way.\n\nNBRHCalert.herokuapp.com/confirm/{1}\n\nThank you!'.format(name, slot),
+                    body='\nHello {0},\n\nWe are now ready for you!\n\nPlease use the link below to indicate that you are on your way.\n\nNBRHCalert.herokuapp.com/{1}/confirm\n\nThank you!'.format(name, slot_encoded),
                     to=to,
                     from_=settings.TWILIO_PHONE_NUMBER)
 

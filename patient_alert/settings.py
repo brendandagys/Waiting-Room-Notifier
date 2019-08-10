@@ -29,11 +29,11 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'nbrhcalerts@gmail.com'
+EMAIL_HOST_USER = 'alerts.nbrhc@gmail.com'
 EMAIL_HOST_PASSWORD = 'nbrhcadmin1'
 
 TWILIO_ACCOUNT_SID = 'AC426ca527987e550a5961ddd8f6b13fff'
-TWILIO_AUTH_TOKEN = '49b1aa1d35d6035a9941f1e36e5b7b01123h5'
+TWILIO_AUTH_TOKEN = '49b1aa1d35d6035a9941f1e36e5b7b01'
 TWILIO_PHONE_NUMBER= '+17052303221'
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -145,3 +145,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+LOGIN_REDIRECT_URL = '/schedule'

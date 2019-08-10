@@ -1,4 +1,6 @@
-<div id="login">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+<div id="login" class="login_div">
     <form class="form-horizontal" name="LoginForm" action="{% url 'login' %}" method="post">
     {% csrf_token %}
     {% if next %}
@@ -18,7 +20,7 @@
     </div>
     <div class="control-group">
         <div class="controls">
-            <button type="submit" class="btn">Login</button>
+            <button type="submit" class="login_button btn-success btn">Login</button>
         </div>
     </div>
     </form>
