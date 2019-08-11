@@ -553,7 +553,7 @@ $(document).ready(function() {
         'email': selection.get(4).value, // Status will be set to 'Sent' in views.py
       },
       success: function () {
-        console.log('Send notification success to patient at row ' + e.target.id.substr(1 + e.target.id.lastIndexOf('_')) + '.');z
+        console.log('Send notification success to patient at row ' + e.target.id.substr(1 + e.target.id.lastIndexOf('_')) + '.');
         // $(selection.get(5)).replaceWith("<input id=\"id_status_" + form_indicator + "\" class=\"form-control form-control-sm center_text\" type=\"text\" value=\"Sent\" disabled>");
         alert('\'Ready For Appointment\' message has been sent!');
       }
@@ -588,6 +588,9 @@ $(document).ready(function() {
               $(this).val('CONFIRMED');
 
               var name = $(name_element).val().trim().split(' ').map((s) => s.charAt(0).toUpperCase() + s.substring(1)).join(' ');
+              if (name === '') {
+                  alert('The patient is on their way.')
+              }
               alert(name + ' is on their way.');
             }
             $(this).addClass("red_text");

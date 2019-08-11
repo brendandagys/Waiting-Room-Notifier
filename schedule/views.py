@@ -531,12 +531,12 @@ def schedule(request):
             # Change the indicator to a semi-random number, the 48-set of which change every day, so that no one can meddle
             slot_encoded = encoder[slot]
 
+            # Use regex to limit spaces to 1, split the resulting string on whitespaces, then capitalize each segment
+            name = ' '.join([x.capitalize() for x in re.sub('\s{2,}', ' ', name).split(' ')])
+
             # Keep 'there' lower-case when no name is provided in the form.
             if name == 'There':
                 name = 'there'
-
-            # Use regex to limit spaces to 1, split the resulting string on whitespaces, then capitalize each segment
-            name = ' '.join([x.capitalize() for x in re.sub('\s{2,}', ' ', name).split(' ')])
 
             slot_json = json_dicts[slot - 1]
 
