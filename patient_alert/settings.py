@@ -39,7 +39,7 @@ TWILIO_PHONE_NUMBER= '+17052303221'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['patientalert.herokuapp.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['appointmentalert.herokuapp.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
