@@ -554,12 +554,12 @@ $(document).ready(function() {
       },
       success: function () {
         console.log('Send notification success to patient at row ' + e.target.id.substr(1 + e.target.id.lastIndexOf('_')) + '.');z
-        $(selection.get(5)).replaceWith("<input id=\"id_status_" + form_indicator + "\" class=\"form-control form-control-sm center_text\" type=\"text\" value=\"Sent\" disabled>");
+        // $(selection.get(5)).replaceWith("<input id=\"id_status_" + form_indicator + "\" class=\"form-control form-control-sm center_text\" type=\"text\" value=\"Sent\" disabled>");
         alert('\'Ready For Appointment\' message has been sent!');
       }
     });
     // $(selection.get(5)).hide(2000);
-    // $(selection.get(5)).replaceWith("<input id=\"id_status_" + form_indicator + "\" class=\"form-control form-control-sm center_text\" type=\"text\" value=\"Sent\" disabled>");
+    $(selection.get(5)).replaceWith("<input id=\"id_status_" + form_indicator + "\" class=\"form-control form-control-sm center_text\" type=\"text\" value=\"Sent\" disabled>");
   });
 
   // Repeatedly check for new status values, and raise an alert if patient is now 'CONFIRMED'
