@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import django_heroku
 
 SECURE_SSL_REDIRECT = True
 
@@ -148,3 +149,5 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # Added for Heroku from Core
 STATIC_URL = '/static/'
 
 # LOGIN_REDIRECT_URL = '/schedule'
+
+django_heroku.settings(locals())
