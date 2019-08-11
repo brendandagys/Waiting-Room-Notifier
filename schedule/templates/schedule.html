@@ -406,17 +406,19 @@ $(document).ready(function() {
 
     if (object.val().trim() !== '') {
 
-      let numbers_regex = object.val().match(/^[^\d]*([0-9]*)[^\d]*([0-9]*)[^\d]*([0-9]*)[^\d]*([0-9]*)[^\d]*([0-9]*)[^\d]*([0-9]*)[^\d]*([0-9]*)$/); // .map(Number)[0] IT IS A STRING
+      let numbers_regex = object.val().match(/^[^\d]*([0-9]*)[^\d]*([0-9]*)[^\d]*([0-9]*)[^\d]*([0-9]*)[^\d]*([0-9]*)[^\d]*([0-9]*)[^\d]*([0-9]*)[^\d]*([0-9]*)[^\d]*([0-9]*)[^\d]*([0-9]*)$/); // .map(Number)[0] IT IS A STRING
 
       if (numbers_regex != null) {
-        var numbers = numbers_regex[1] + numbers_regex[2] + numbers_regex[3] + numbers_regex[4] + numbers_regex[5] + numbers_regex[6] + numbers_regex[7];
+        var numbers = numbers_regex[1] + numbers_regex[2] + numbers_regex[3] + numbers_regex[4] + numbers_regex[5] + numbers_regex[6] + numbers_regex[7] + numbers_regex[8] + numbers_regex[9] + numbers_regex[10];
 
         if (numbers.length === 10) {
+          console.log('Parsed 10-digit phone number: ' + numbers)
           object.removeClass('not_validated');
           object.addClass('validated');
         }
         else if (numbers.length === 7) {
           numbers = '705' + numbers
+          console.log('Parsed 7-digit phone number: ' + numbers)
           object.removeClass('not_validated');
           object.addClass('validated');
         }
@@ -452,6 +454,7 @@ $(document).ready(function() {
 
       if (email_regex != null) {
         var email = email_regex[0];
+        console.log('Parsed email: ' + email)
         object.removeClass('not_validated');
         object.addClass('validated');
       }
