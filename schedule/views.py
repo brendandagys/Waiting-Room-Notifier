@@ -554,7 +554,7 @@ def schedule(request):
         <h2>Hello {0},</h2>
         <h3>We are now ready for you!</h3> </br>
         <p>Please use the button below to indicate that you are on your way. Thank you!</p> </br>
-        <a href="www.appointmentalert.herokuapp.com/{1}/confirm"><input type="button" style="border-radius: 9px; padding: 1rem; margin: 1rem 0; color: white; background-color: #1F45FC;" value="Confirm Appointment"></a>
+        <a href="appointmentalert.herokuapp.com/{1}/confirm"><input type="button" style="border-radius: 9px; padding: 1rem; margin: 1rem 0; color: white; background-color: #1F45FC;" value="Confirm Appointment"></a>
       </body>
     </html>
     """.format(name, slot_encoded)
@@ -567,7 +567,7 @@ def schedule(request):
                 to = '+1' + phone
                 client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
                 response = client.messages.create(
-                    body='\nHello {0},\n\nWe are now ready for you!\n\nPlease use the link below to indicate that you are on your way.\n\nwww.appointmentalert.herokuapp.com/{1}/confirm\n\nThank you!'.format(name, slot_encoded),
+                    body='\nHello {0},\n\nWe are now ready for you!\n\nPlease use the link below to indicate that you are on your way.\n\nappointmentalert.herokuapp.com/{1}/confirm\n\nThank you!'.format(name, slot_encoded),
                     to=to,
                     from_=settings.TWILIO_PHONE_NUMBER)
 
