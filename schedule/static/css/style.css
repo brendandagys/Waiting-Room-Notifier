@@ -3,7 +3,7 @@
   margin: 0;
 }
 
-input[type='text']{
+input[type='text']:not(#username){
   font-size: 0.75rem;
   height: 75%;
 }
@@ -61,6 +61,10 @@ select {
   background-color: #F4F4F4;
 }
 
+.lighter_background {
+    background-color: #FAFAFA;
+}
+
 .login_button {
     position: relative;
     /* margin: 2rem; */
@@ -84,4 +88,21 @@ select {
     margin-bottom: 35px;
     width: 110px;
     height: auto;
+}
+
+.position_login_elements {
+    text-align: center;
+    top: 3rem;
+}
+
+#password {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+#username, #password {
+    max-width: 15rem;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
 }
