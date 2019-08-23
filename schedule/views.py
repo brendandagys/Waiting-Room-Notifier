@@ -258,28 +258,33 @@ def handle_patient_responses(request):
 
         # Split the URL string on '/' and take the number at the end
         form_indicator = int(int(url.split('/')[-2]) / (date.month * date.day))
-        form_indicator = decoder[form_indicator]
 
-        schedule_object = Schedule.objects.all().order_by('-date')[:1][0]
+        try:
+            form_indicator = decoder[form_indicator]
 
-        objects = [schedule_object.slot_1, schedule_object.slot_2, schedule_object.slot_3, schedule_object.slot_4,
-                   schedule_object.slot_5, schedule_object.slot_6, schedule_object.slot_7, schedule_object.slot_8,
-                   schedule_object.slot_9, schedule_object.slot_10, schedule_object.slot_11, schedule_object.slot_12,
-                   schedule_object.slot_13, schedule_object.slot_14, schedule_object.slot_15, schedule_object.slot_16,
-                   schedule_object.slot_17, schedule_object.slot_18, schedule_object.slot_19, schedule_object.slot_20,
-                   schedule_object.slot_21, schedule_object.slot_22, schedule_object.slot_23, schedule_object.slot_24,
-                   schedule_object.slot_25, schedule_object.slot_26, schedule_object.slot_27, schedule_object.slot_28,
-                   schedule_object.slot_29, schedule_object.slot_30, schedule_object.slot_31, schedule_object.slot_32,
-                   schedule_object.slot_33, schedule_object.slot_34, schedule_object.slot_35, schedule_object.slot_36,
-                   schedule_object.slot_37, schedule_object.slot_38, schedule_object.slot_39, schedule_object.slot_40,
-                   schedule_object.slot_41, schedule_object.slot_42, schedule_object.slot_43, schedule_object.slot_44,
-                   schedule_object.slot_45, schedule_object.slot_46, schedule_object.slot_47, schedule_object.slot_48, ]
+            schedule_object = Schedule.objects.all().order_by('-date')[:1][0]
 
-        objects[form_indicator - 1]['status'] = 'CONFIRMED'
+            objects = [schedule_object.slot_1, schedule_object.slot_2, schedule_object.slot_3, schedule_object.slot_4,
+                       schedule_object.slot_5, schedule_object.slot_6, schedule_object.slot_7, schedule_object.slot_8,
+                       schedule_object.slot_9, schedule_object.slot_10, schedule_object.slot_11, schedule_object.slot_12,
+                       schedule_object.slot_13, schedule_object.slot_14, schedule_object.slot_15, schedule_object.slot_16,
+                       schedule_object.slot_17, schedule_object.slot_18, schedule_object.slot_19, schedule_object.slot_20,
+                       schedule_object.slot_21, schedule_object.slot_22, schedule_object.slot_23, schedule_object.slot_24,
+                       schedule_object.slot_25, schedule_object.slot_26, schedule_object.slot_27, schedule_object.slot_28,
+                       schedule_object.slot_29, schedule_object.slot_30, schedule_object.slot_31, schedule_object.slot_32,
+                       schedule_object.slot_33, schedule_object.slot_34, schedule_object.slot_35, schedule_object.slot_36,
+                       schedule_object.slot_37, schedule_object.slot_38, schedule_object.slot_39, schedule_object.slot_40,
+                       schedule_object.slot_41, schedule_object.slot_42, schedule_object.slot_43, schedule_object.slot_44,
+                       schedule_object.slot_45, schedule_object.slot_46, schedule_object.slot_47, schedule_object.slot_48, ]
 
-        schedule_object.save()
+            objects[form_indicator - 1]['status'] = 'CONFIRMED'
 
-        return render(request, 'thankyou.html')
+            schedule_object.save()
+
+            return render(request, 'thankyou.html')
+
+        except:
+            return render(request, 'error.html')
 
 @login_required
 def schedule(request):
@@ -556,12 +561,10 @@ def schedule(request):
         <p>Please use the button below to indicate that you are on your way. Thank you!</p> </br>
         <a href="appointmentalert.herokuapp.com/{1}/confirm"><input type="button" style="border-radius: 9px; padding: 1rem; margin: 1rem 0; color: white; background-color: #1F45FC;" value="Confirm Appointment"></a>
         </br>
-        <p>Or click <a href="appointmentalert.herokuapp.com/{1}/confirm">here</a>.</p>
-
       </body>
     </html>
     """.format(name, slot_encoded)
-                email_message = EmailMessage('Ready for your appointment!', email_body, to=[email])
+                email_message = EmailMessage('Ready for your appointment!', email_body, from='NBRHC Alerts <alerts.nbrhc@gmail.com>', to=[email])
                 email_message.content_subtype = "html" # this is the crucial part
                 email_message.send()
 
