@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-import django_heroku
+# import django_heroku
 
 SECURE_SSL_REDIRECT = False
 
@@ -30,17 +30,17 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'alerts.nbrhc@gmail.com'
+EMAIL_HOST_USER = 'alerts.clinic@gmail.com'
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD', 'fake_password')
 
 TWILIO_ACCOUNT_SID = os.environ.get('TWILIO_SID', 'fake_SID')
 TWILIO_AUTH_TOKEN = os.environ.get('TWILIO_AUTH_TOKEN', 'fake_auth_token')
-TWILIO_PHONE_NUMBER= '+17052303221'
+TWILIO_PHONE_NUMBER = '+17052303221'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['appointmentalert.herokuapp.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = '*'
 
 
 # Application definition
@@ -91,23 +91,23 @@ WSGI_APPLICATION = 'patient_alert.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'appointment_alert',
-        'USER': 'brendan',
-        'PASSWORD': 'temp_password',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'appointment_alert',
+#         'USER': 'brendan',
+#         'PASSWORD': 'temp_password',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -145,9 +145,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # Added for Heroku from Corey Schafer tutorial. Heroku puts static files here.
+# Added for Heroku from Corey Schafer tutorial. Heroku puts static files here.
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 
 # LOGIN_REDIRECT_URL = '/schedule'
 
-django_heroku.settings(locals())
+# django_heroku.settings(locals())

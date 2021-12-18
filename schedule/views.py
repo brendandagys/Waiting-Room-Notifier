@@ -564,7 +564,7 @@ def schedule(request):
       </body>
     </html>
     """.format(name, slot_encoded)
-                email_message = EmailMessage('Ready for your appointment!', email_body, from_email='NBRHC Alerts <alerts.nbrhc@gmail.com>', to=[email]) # It wants a tuple or a list
+                email_message = EmailMessage('Ready for your appointment!', email_body, from_email='Alerts <alerts.clinic@gmail.com>', to=[email]) # It wants a tuple or a list
                 email_message.content_subtype = "html" # this is the crucial part
                 email_message.send()
 
