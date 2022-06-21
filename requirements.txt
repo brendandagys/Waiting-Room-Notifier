@@ -15,7 +15,7 @@ gunicorn==19.9.0
 idna==2.8
 jdcal==1.4.1
 mysqlclient==1.4.2.post1
-numpy==1.17.0
+numpy==1.22.0
 odfpy==1.4.0
 openpyxl==2.6.2
 pandas==0.25.0
